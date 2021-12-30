@@ -12,6 +12,7 @@ def find_and_click(url):
     select_x, select_y = r
     pyautogui.click(select_x, select_y)
 
+
 def main():
     os.chdir('Factiva Search Results')
     [os.remove(os.path.join(os.curdir, f)) for f in os.listdir()]
@@ -21,10 +22,18 @@ def main():
     has_next = True
     while has_next:
         count += 1
-        try:
-            select_x, select_y = pyautogui.locateCenterOnScreen('selectall.png')
-        except TypeError:
-            select_x, select_y = pyautogui.locateCenterOnScreen('selectallprev.png')
+        done = 0
+        r = None
+        while done < 5 or r is None:
+            try:
+                r = pyautogui.locateCenterOnScreen('selectall.png', confidence=.9)
+            except TypeError:
+                r = pyautogui.locateCenterOnScreen('selectallprev.png', confidence=.9)
+            done += 1
+        if r is None:
+            has_next = False
+            continue
+        select_x, select_y = r
         pyautogui.click(select_x, select_y)
 
         savedata_x, savedata_y = pyautogui.locateCenterOnScreen('savedataas.png')
